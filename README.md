@@ -2,9 +2,7 @@
 
 A single-page, zero-dependency cheatsheet of the ten terminal commands worth knowing, styled as a glassmorphic terminal window. Tap any command to copy it. Built to drop straight onto GitHub Pages.
 
-**Live demo:** https://prajwalkamble.github.io/terminal-cheatsheet/
-
-> Replace the link above with your own once Pages is enabled.
+**Live demo:** https://prajwalkamble.github.io/Terminal-Commands/
 
 ---
 
