@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>~/cheatsheet — 10 commands I'd teach a friend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0d17;
+    --bg-2:#10131f;
+    --panel:rgba(22,26,42,.72);
+    --line:rgba(124,107,255,.16);
+    --txt:#e7e9f3;
+    --muted:#8b90a8;
+    --indigo:#7c6bff;
+    --violet:#b794ff;
+    --green:#5eead4;
+    --amber:#fbbf6b;
+    --prompt:#7c6bff;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"Inter",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;font-family:var(--sans);color:var(--txt);
+    background:
+      radial-gradient(900px 500px at 80% -10%,rgba(124,107,255,.18),transparent 60%),
+      radial-gradient(700px 480px at -10% 20%,rgba(94,234,212,.08),transparent 55%),
+      var(--bg);
+    -webkit-font-smoothing:antialiased;line-height:1.55;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:clamp(20px,5vw,56px) clamp(18px,4vw,28px) 72px}
+
+  /* hero terminal window */
+  .term{
+    border:1px solid var(--line);border-radius:16px;overflow:hidden;
+    background:linear-gradient(180deg,rgba(16,19,31,.92),rgba(11,13,23,.92));
+    box-shadow:0 30px 80px -30px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.03);
+    backdrop-filter:blur(10px);
+  }
+  .term__bar{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+  .dot{width:11px;height:11px;border-radius:50%}
+  .dot.r{background:#ff6058}.dot.y{background:#ffbd2e}.dot.g{background:#28c840}
+  .term__title{margin-left:8px;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+  .term__body{padding:clamp(20px,4vw,34px) clamp(18px,4vw,30px)}
+  .kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--green);margin:0 0 14px}
+  .kicker .c{color:var(--muted)}
+  h1{font-family:var(--mono);font-weight:700;font-size:clamp(26px,5.5vw,40px);line-height:1.12;margin:0 0 14px;letter-spacing:-.01em}
+  h1 .grad{background:linear-gradient(92deg,var(--indigo),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{margin:0;max-width:60ch;color:var(--muted);font-size:15.5px}
+  .cursor{display:inline-block;width:9px;height:1.05em;vertical-align:-2px;margin-left:3px;background:var(--violet);animation:blink 1.1s steps(1) infinite;border-radius:1px}
+  @keyframes blink{50%{opacity:0}}
+
+  /* list */
+  .list{margin:30px 0 0;padding:0;list-style:none;display:grid;gap:14px}
+  .cmd{
+    border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;
+    background:var(--panel);backdrop-filter:blur(8px);
+    transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease;
+    display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;
+  }
+  .cmd:hover{border-color:rgba(124,107,255,.4);transform:translateY(-2px);box-shadow:0 18px 40px -24px rgba(124,107,255,.5)}
+  .num{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--indigo);padding-top:4px;min-width:22px;opacity:.85}
+  .cmd__main{min-width:0}
+  .line{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .icon{width:18px;height:18px;flex:none;color:var(--violet);stroke-width:1.9}
+  .code{
+    font-family:var(--mono);font-weight:500;font-size:14.5px;color:var(--txt);
+    background:rgba(124,107,255,.1);border:1px solid var(--line);
+    padding:5px 10px;border-radius:8px;white-space:nowrap;overflow:auto;max-width:100%;
+  }
+  .code .p{color:var(--prompt);user-select:none}
+  .copy{
+    margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.03em;
+    color:var(--muted);background:transparent;border:1px solid var(--line);
+    border-radius:7px;padding:5px 9px;cursor:pointer;transition:.15s;
+  }
+  .copy:hover{color:var(--green);border-color:rgba(94,234,212,.45)}
+  .copy.done{color:var(--green);border-color:rgba(94,234,212,.45)}
+  .desc{margin:10px 0 0;font-size:14.5px;color:var(--txt)}
+  .ex{margin:9px 0 0;font-family:var(--mono);font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:baseline}
+  .ex .a{color:var(--amber);flex:none}
+  .ex code{color:var(--green)}
+
+  /* floating back-to-top arrow */
+  .top{
+    position:fixed;right:clamp(16px,3.5vw,30px);bottom:clamp(16px,3.5vw,30px);z-index:50;
+    width:46px;height:46px;display:grid;place-items:center;border-radius:13px;cursor:pointer;
+    color:#fff;border:1px solid rgba(183,148,255,.5);
+    background:linear-gradient(135deg,var(--indigo),var(--violet));
+    box-shadow:0 12px 30px -8px rgba(124,107,255,.6),inset 0 1px 0 rgba(255,255,255,.18);
+    opacity:0;transform:translateY(14px) scale(.92);pointer-events:none;
+    transition:opacity .35s ease,transform .35s ease,box-shadow .2s ease;
+  }
+  .top.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;animation:float 2.4s ease-in-out infinite}
+  .top:hover{box-shadow:0 16px 38px -8px rgba(124,107,255,.85)}
+  .top:active{transform:translateY(1px) scale(.97)}
+  .top svg{width:22px;height:22px;stroke-width:2.2}
+  @keyframes float{0%,100%{translate:0 0}50%{translate:0 -5px}}
+
+  :focus-visible{outline:2px solid var(--violet);outline-offset:2px;border-radius:6px}
+  @media (max-width:560px){
+    .cmd{grid-template-columns:1fr;gap:8px}
+    .num{padding-top:0}
+    .copy{font-size:0}
+    .copy::before{content:"⧉";font-size:13px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="term" aria-label="Terminal cheatsheet">
+    <div class="term__bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="term__title">friend@laptop: ~/cheatsheet</span>
+    </div>
+    <div class="term__body">
+      <p class="kicker"><span class="c">$</span> man me <span class="c">— the 10 commands I reach for daily</span></p>
+      <h1>Top 10 <span class="grad">Terminal Commands</span><span class="cursor"></span></h1>
+      <p class="lede">The ten commands I reach for most — each paired with a one-line description and a real moment you'd use it. Tap any command to copy it.</p>
+    </div>
+  </section>
+
+  <ol class="list" role="list">
+
+    <li class="cmd">
+      <span class="num">01</span>
+      <div class="cmd__main">
+        <div class="line">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <span class="code"><span class="p">$ </span>cd</span>
+          <button class="copy" data-copy="cd ~/projects">copy</button>
+        </div>
+        <p class="desc">Move between folders — your main way of navigating the filesystem.</p>
+        <p class="ex"><span class="a">when</span><span>jump straight into a project: <code>cd ~/projects/tradeacademy</code></span></p>
+      </div>
+    </li>
+
+    <li class="cmd">
+      <span class="num">02</span>
+      <div class="cmd__main">
+        <div class="line">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+          <span class="code"><span class="p">$ </span>ls -la</span>
+          <button class="copy" data-copy="ls -la">copy</button>
+        </div>
+        <p class="desc">List everything in a folder — hidden files and permissions included.</p>
+        <p class="ex"><span class="a">when</span><span>checking whether a <code>.env</code> exists and who can read it: <code>ls -la</code></span></p>
+      </div>
+    </li>
+
+    <li class="cmd">
+      <span class="num">03</span>
+      <div class="cmd__main">
+        <div class="line">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="code"><span class="p">$ </span>grep -r</span>
+          <button class="copy" data-copy='grep -r "TODO" src/'>copy</button>
+        </div>
+        <p class="desc">Search text or patterns across files, recursively into subfolders.</p>
+        <p class="ex"><span class="a">when</span><span>finding every loose end in the code: <code>grep -r "TODO" src/</code></span></p>
+      </div>
+    </li>
+
+    <li class="cmd">
+      <span class="num">04</span>
+      <div class="cmd__main">
+        <div class="line">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="6"/><path d="m20 20-3-3M11 8v6M8 11h6"/></svg>
+          <span class="code"><span class="p">$ </span>find</span>
+          <button class="copy" data-copy='find . -name "*.log"'>copy</button>
+        </div>
+        <p class="desc">Locate files by name, type, or age — anywhere under a directory.</p>
+        <p class="ex"><span class="a">when</span><span>hunting stray logs before a commit: <code>find . -name "*.log"</code></span></p>
+      </div>
+    </li>
+
+    <li class="cmd">
+      <span class="num">05</span>
+      <div class="cmd__main">
+        <div class="line">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12h4l2 5 4-12 2 7h6"/></svg>
+          <span class="code"><span class="p">$ </span>tail -f</span>
+          <button class="copy" data-copy="tail -f app.log">copy</button>
+        </div>
+        <p class="desc">Stream the end of a file live as new lines are written.</p>
+        <p class="ex"><span class="a">when</span><span>watching Spring Boot logs while you test an endpoint: <code>tail -f app.log</code></span></p>
+      </div>
+    </li>
+
+    <li class="cmd">
+      <span class="num">06</span>
+      <div class="cmd__main">
+        <div class="line">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3a15 15 0 0 0 0 18M12 3a15 15 0 0 1 0 18"/><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg>
+          <span class="code"><span class="p">$ </span>curl</span>
+          <button class="copy" data-copy="curl localhost:8080/api/health">copy</button>
+        </div>
+        <p class="desc">Make HTTP requests straight from the terminal — no Postman needed.</p>
+        <p class="ex"><span class="a">when</span><span>pinging your running API: <code>curl localhost:8080/api/health</code></span></p>
+      </div>
+    </li>
+
+    <li class="cmd">
+      <span class="num">07</span>
+      <div class="cmd__main">
+        <div class="line">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 7h.01M7 17h.01"/></svg>
+          <span class="code"><span class="p">$ </span>ps aux | grep</span>
+          <button class="copy" data-copy="ps aux | grep java">copy</button>
+        </div>
+        <p class="desc">List running processes and filter down to the one you care about.</p>
+        <p class="ex"><span class="a">when</span><span>finding a stuck Java process and its PID: <code>ps aux | grep java</code></span></p>
+      </div>
+    </li>
+
+    <li class="cmd">
+      <span class="num">08</span>
+      <div class="cmd__main">
+        <div class="line">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+          <span class="code"><span class="p">$ </span>kill</span>
+          <button class="copy" data-copy="kill -9 12345">copy</button>
+        </div>
+        <p class="desc">Stop a process by its PID when it won't quit on its own.</p>
+        <p class="ex"><span class="a">when</span><span>freeing a hung server holding port 8080: <code>kill -9 12345</code></span></p>
+      </div>
+    </li>
+
+    <li class="cmd">
+      <span class="num">09</span>
+      <div class="cmd__main">
+        <div class="line">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <span class="code"><span class="p">$ </span>chmod +x</span>
+          <button class="copy" data-copy="chmod +x deploy.sh">copy</button>
+        </div>
+        <p class="desc">Change file permissions — most often, make a script executable.</p>
+        <p class="ex"><span class="a">when</span><span>so you can run it directly: <code>chmod +x deploy.sh</code> → <code>./deploy.sh</code></span></p>
+      </div>
+    </li>
+
+    <li class="cmd">
+      <span class="num">10</span>
+      <div class="cmd__main">
+        <div class="line">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V8a5 5 0 0 1 10 0M12 15v2"/><path d="m18 4 2 2-2 2"/></svg>
+          <span class="code"><span class="p">$ </span>ssh</span>
+          <button class="copy" data-copy="ssh prajwal@server-ip">copy</button>
+        </div>
+        <p class="desc">Securely log into a remote machine from your own terminal.</p>
+        <p class="ex"><span class="a">when</span><span>connecting to your deployment box: <code>ssh prajwal@server-ip</code></span></p>
+      </div>
+    </li>
+
+  </ol>
+</div>
+
+<button class="top" id="toTop" aria-label="Back to top" title="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+  document.querySelectorAll('.copy').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      const text=btn.getAttribute('data-copy');
+      try{await navigator.clipboard.writeText(text);}catch(e){
+        const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();
+      }
+      const label=btn.textContent;btn.textContent='copied';btn.classList.add('done');
+      setTimeout(()=>{btn.textContent=label;btn.classList.remove('done');},1300);
+    });
+  });
+
+  const toTop=document.getElementById('toTop');
+  const onScroll=()=>{
+    const nearBottom=window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-140;
+    toTop.classList.toggle('show',nearBottom);
+  };
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll);
+  onScroll();
+  toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>
