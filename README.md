@@ -42,27 +42,6 @@ A single-page, zero-dependency cheatsheet of the ten terminal commands worth kno
 
 ---
 
----
-
-## Deploy to GitHub Pages
-
-1. Push this repo to GitHub.
-2. (Recommended) rename `terminal-cheatsheet.html` to **`index.html`** so it serves at the repo root.
-3. Go to **Settings → Pages**.
-4. Under **Build and deployment**, set **Source** to `Deploy from a branch`.
-5. Choose the `main` branch and the `/ (root)` folder, then **Save**.
-6. Wait a minute, then visit `https://<your-username>.github.io/<repo-name>/`.
-
----
-
-## Customize
-
-- **Add/remove commands** — duplicate any `<li class="cmd">` block and update the icon, `data-copy` value, description, and example.
-- **Theme** — colors live in the `:root` CSS variables (`--indigo`, `--violet`, `--green`, `--amber`, etc.).
-- **Arrow trigger** — to show the back-to-top arrow after any scroll instead of only at the bottom, change the `nearBottom` check to `window.scrollY > 300`.
-
----
-
 ## License
 
 MIT — free to use, modify, and share.
